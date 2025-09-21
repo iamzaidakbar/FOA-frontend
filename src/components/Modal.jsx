@@ -1,0 +1,71 @@
+import { motion, AnimatePresence } from "framer-motion";
+
+const backdrop = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+  exit: { opacity: 0 },
+};
+
+const modal = {
+  hidden: { y: "-50%", opacity: 0, scale: 0.9 },
+  visible: {
+    y: "0",
+    opacity: 1,
+    scale: 1,
+    transition: { type: "spring", stiffness: 300, damping: 25 },
+  },
+  exit: { y: "-50%", opacity: 0, scale: 0.9 },
+};
+
+const CustomModal = ({
+  isOpen,
+  setIsOpen,
+  title,
+  subTitle,
+  children,
+  footer,
+}) => {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          variants={backdrop}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          onClick={() => setIsOpen(false)} 
+        >
+          <motion.div
+            className="bg-white rounded-xl shadow-lg w-[90%] max-w-md max-h-[95vh] overflow-y-auto p-4 relative"
+            variants={modal}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            style={{
+              scrollbarWidth: "thin",
+              scrollbarColor: "#ccc transparent",
+            }}
+            onClick={(e) => e.stopPropagation()} // prevent close on modal click
+          >
+            {/* Header */}
+            {title && <h2 className="font-semibold text-xl mb-2">{title}</h2>}
+            {subTitle && (
+              <p className="text-gray-500 text-sm mb-2">{subTitle}</p>
+            )}
+
+            {/* Content */}
+            <div>{children}</div>
+
+            {/* Footer (optional) */}
+            {footer && (
+              <div className="mt-4 flex justify-end space-x-2">{footer}</div>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+export default CustomModal;
