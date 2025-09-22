@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "./ui/Button";
 import { SiGoogle } from "react-icons/si";
 import InputField from "./ui/InputField";
@@ -8,23 +8,30 @@ import { useAuth } from "../hooks/auth";
 import RoleSelector from "./RoleSelector";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
+import UploadImage from "./UploadImage";
 
 const SignupForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+
+  const [uploadedUrls, setUploadedUrls] = useState([]);
   const { handleSignup, loading } = useAuth();
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     password: "",
     mobile: "",
+    photoUrl: "",
     role: "owner",
   });
 
   const submitForm = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted: ", formData);
+    const { photoUrl } = formData;
+    if (uploadedUrls.length && !photoUrl) {
+      formData.photoUrl = uploadedUrls[0];
+    }
     const user = await handleSignup(formData);
     dispatch(setUser(user));
     navigate(location.pathname, { replace: true });
@@ -92,6 +99,12 @@ const SignupForm = () => {
         required
         onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
         className="w-full"
+      />
+
+      <UploadImage
+        uploadLimit={1}
+        className="mb-4"
+        setUploadedUrls={setUploadedUrls}
       />
 
       <Button

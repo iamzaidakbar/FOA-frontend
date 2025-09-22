@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.9.0",
     "@tailwindcss/vite": "^4.1.13",
     "antd": "^5.27.4",
+    "antd-img-crop": "^4.25.0",
     "axios": "^1.12.2",
     "framer-motion": "^12.23.16",
     "js-cookie": "^3.0.5",
