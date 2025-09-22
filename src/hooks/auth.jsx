@@ -1,5 +1,5 @@
 import Toast from "../components/ui/Toast";
-import { signup, signin } from "../services/auth";
+import { signup, signin, signout } from "../services/auth";
 import { useState } from "react";
 
 export const useAuth = () => {
@@ -41,11 +41,27 @@ export const useAuth = () => {
     }
   };
 
+  const handleSignout = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await signout();
+      setUser(null);
+      Toast.success(response.message || "Logout successful");
+      return response.user;
+    } catch (err) {
+      Toast.error(err?.response?.data?.message || "Logout failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     user,
     loading,
     error,
     handleSignup,
     handleLogin,
+    handleSignout,
   };
 };

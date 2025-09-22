@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import Cookies from "js-cookie";
 
 const userSlice = createSlice({
   name: "user",
@@ -20,7 +19,7 @@ const userSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
-      Cookies.remove("token");
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     },
   },
 });

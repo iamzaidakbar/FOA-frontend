@@ -1,8 +1,19 @@
 import { LuUserRoundPen } from "react-icons/lu";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { motion } from "framer-motion";
+import { useDispatch } from "react-redux";
+import { useAuth } from "../../hooks/auth";
+import { logout } from "../../store/slices/userSlice";
 
 const UserDropdown = () => {
+  const dispatch = useDispatch();
+  const { handleSignout } = useAuth();
+
+  const signOut = async () => {
+    await handleSignout();
+    dispatch(logout());
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95, y: -4 }}
@@ -21,8 +32,17 @@ const UserDropdown = () => {
         <div className="h-px bg-gray-200" />
 
         <li className="flex items-center gap-2 px-4 py-3 cursor-pointer hover:bg-gray-100 transition-colors">
-          <RiLogoutCircleLine size={16} color="black" className="text-gray-600 " />
-          <span className="font-medium hover:text-gray-900">Logout</span>
+          <RiLogoutCircleLine
+            size={16}
+            color="black"
+            className="text-gray-600 "
+          />
+          <span
+            onClick={() => signOut()}
+            className="font-medium hover:text-gray-900"
+          >
+            Logout
+          </span>
         </li>
       </ul>
     </motion.div>
