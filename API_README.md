@@ -16,6 +16,11 @@ This document lists all available API endpoints for the Food Ordering App backen
 
 ---
 
+## Profile
+
+**PUT** `/api/profile/me` - Update own profile
+**PUT** `/api/profile/:userId` - Update user profile ( only admin )
+
 ## Items
 
 **POST** `/api/item/add-item` — Add a new item (auth, image upload)  

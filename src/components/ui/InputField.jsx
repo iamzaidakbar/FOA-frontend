@@ -5,8 +5,10 @@ const InputField = ({
   placeholder,
   required,
   helperText,
+  onChange,
+  className = "",
 }) => (
-  <div className="form-group flex flex-col gap-2 mb-4">
+  <div className={`form-group flex flex-col gap-2 mb-4 ${className}`}>
     <label className="font-medium text-[.9rem]" htmlFor={id}>
       {label} {required && "*"}
     </label>
@@ -16,6 +18,7 @@ const InputField = ({
       id={id}
       placeholder={placeholder}
       required={required}
+      onChange={onChange}
     />
     {helperText && (
       <p className="text-gray-500 font-thin text-xs">{helperText}</p>

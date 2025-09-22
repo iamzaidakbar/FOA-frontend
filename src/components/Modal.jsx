@@ -34,10 +34,10 @@ const CustomModal = ({
           initial="hidden"
           animate="visible"
           exit="hidden"
-          onClick={() => setIsOpen(false)} 
+          onClick={() => setIsOpen(false)}
         >
           <motion.div
-            className="bg-white rounded-xl shadow-lg w-[90%] max-w-md max-h-[95vh] overflow-y-auto p-4 relative"
+            className="bg-white rounded-xl shadow-lg w-[90%] max-w-xl max-h-[95vh] overflow-y-auto p-4 relative"
             variants={modal}
             initial="hidden"
             animate="visible"

@@ -3,6 +3,9 @@ import axiosInstance from "./axiosInstance";
 // Login (cookies automatically stored by browser if backend sets them)
 export const signin = (credentials) => axiosInstance.post("/auth/signin", credentials);
 
+// Signup
+export const signup = (credentials) => axiosInstance.post("/auth/signup", credentials);
+
 // Logout (clears cookie server-side)
 export const signout = () => axiosInstance.get("/auth/signout");
 

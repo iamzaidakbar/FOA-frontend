@@ -1,15 +1,18 @@
-import Logo from "./Logo";
-import logo from "../assets/logo.jpg";
-import UserProfile from "./UserProfile.jsx";
-import NavItems from "./NavItems";
-import SearchInput from "../components/ui/SearchInput.jsx";
-import { NAV_ITEMS } from "../constants";
+import Logo from "../Logo.jsx";
+import logo from "../../assets/logo.jpg";
+import UserProfile from "../UserProfile.jsx";
+import NavItems from "../NavItems";
+import SearchInput from "../ui/SearchInput.jsx";
+import { NAV_ITEMS } from "../../constants";
 import { GiBulb } from "react-icons/gi";
 import { Badge } from "antd";
 import { IoCartOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 
 const UserNavbar = ({setIsOpen, setModalType}) => {
+  const {user} = useSelector((store) => store?.user);
+  
   return (
     <motion.div
       initial={{ y: -50, opacity: 0 }}
@@ -38,7 +41,7 @@ const UserNavbar = ({setIsOpen, setModalType}) => {
             className="cursor-pointer hover:text-gray-700 transition duration-300"
           />
         </Badge>
-        <UserProfile setIsOpen={setIsOpen} setModalType={setModalType} isLoggedIn={false} user={{}} />
+        <UserProfile setIsOpen={setIsOpen} setModalType={setModalType} isLoggedIn={!!user} user={user} />
       </motion.div>
     </motion.div>
   );

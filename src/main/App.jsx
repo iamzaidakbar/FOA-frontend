@@ -1,10 +1,11 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./App.scss";
-import UserNavbar from "../components/UserNavbar";
+import UserNavbar from "../components/Navbar/UserNavbar";
 import CustomModal from "../components/Modal";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
 import { useState, useEffect } from "react";
+import { ToastContainer } from "../components/ui/Toast";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,20 +15,22 @@ function App() {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    
-    if (searchParams.get('signin') === 'true') {
+
+    if (searchParams.get("signin") === "true") {
       setModalType("login");
       setIsOpen(true);
-    } else if (searchParams.get('signup') === 'true') {
+    } else if (searchParams.get("signup") === "true") {
       setModalType("signup");
       setIsOpen(true);
+    } else {
+      setIsOpen(false);
     }
   }, [location.search]);
 
   const handleCloseModal = () => {
     setIsOpen(false);
     // Clean up URL parameters when modal is closed
-    navigate('/', { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (
@@ -35,15 +38,27 @@ function App() {
       <UserNavbar setIsOpen={setIsOpen} setModalType={setModalType} />
       <Outlet />
 
-      <CustomModal 
-        isOpen={isOpen} 
-        setIsOpen={handleCloseModal} 
-        type={modalType} 
-        title={modalType === "login" ? "Login your account" : "Create your account"} 
-        subTitle={modalType === "login" ? "Enter your credentials to login" : "Enter your details to create your account"}
+      <CustomModal
+        isOpen={isOpen}
+        setIsOpen={handleCloseModal}
+        type={modalType}
+        title={
+          modalType === "login" ? "Login your account" : "Create your account"
+        }
+        subTitle={
+          modalType === "login"
+            ? "Enter your credentials to login"
+            : "Enter your details to create your account"
+        }
       >
-        {modalType === "login" ? <LoginForm setModalType={setModalType} /> : <SignupForm setModalType={setModalType} />}
+        {modalType === "login" ? (
+          <LoginForm setModalType={setModalType} />
+        ) : (
+          <SignupForm setModalType={setModalType} />
+        )}
       </CustomModal>
+
+      <ToastContainer />
     </>
   );
 }

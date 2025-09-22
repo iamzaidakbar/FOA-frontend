@@ -1,21 +1,24 @@
 import { motion } from "framer-motion";
 import { FaSpinner } from "react-icons/fa";
+import Spinner from "./Spinner";
 
 const Button = ({
   text,
   icon,
   iconPosition = "left",
   loading = false,
-  variant ,
+  variant,
   onClick,
   size = "md", // sm | md | lg
   className = "",
   rounded = true,
+  disabled = false,
 }) => {
   const isLight = variant === "light";
 
-  const baseClasses =
-    `flex items-center justify-center gap-2 ${rounded ? "rounded-xl" : "rounded-none"} font-bold transition-colors duration-200`;
+  const baseClasses = `flex items-center justify-center gap-2 ${
+    rounded ? "rounded-xl" : "rounded-none"
+  } font-bold transition-colors duration-200`;
 
   const lightClasses =
     "bg-white text-black border border-gray-300 hover:bg-gray-100";
@@ -34,28 +37,41 @@ const Button = ({
       whileTap={{ scale: 0.95 }}
       whileHover={{ scale: 1.02 }}
       onClick={onClick}
-      disabled={loading}
-      className={`cursor-pointer ${className} ${baseClasses} ${sizeClasses[size]} ${
-        isLight ? lightClasses : darkClasses
-      } ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+      disabled={loading || disabled}
+      className={`cursor-pointer ${className} ${baseClasses} ${
+        sizeClasses[size]
+      } ${isLight ? lightClasses : darkClasses} ${
+        disabled ? "opacity-70 cursor-not-allowed pointer-events-none" : ""
+      }`}
     >
       {loading ? (
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-        >
-          <FaSpinner className={`animate-spin ${size === "sm" ? "text-sm" : size === "lg" ? "text-xl" : "text-lg"}`} />
-        </motion.div>
+        <Spinner size="sm" variant="light" />
       ) : (
         <span className="flex items-center gap-2">
           {icon && iconPosition === "left" && (
-            <span className={size === "sm" ? "text-sm" : size === "lg" ? "text-xl" : "text-lg"}>
+            <span
+              className={
+                size === "sm"
+                  ? "text-sm"
+                  : size === "lg"
+                  ? "text-xl"
+                  : "text-lg"
+              }
+            >
               {icon}
             </span>
           )}
           <span className="h-[20px]">{text}</span>
           {icon && iconPosition === "right" && (
-            <span className={size === "sm" ? "text-sm" : size === "lg" ? "text-xl" : "text-lg"}>
+            <span
+              className={
+                size === "sm"
+                  ? "text-sm"
+                  : size === "lg"
+                  ? "text-xl"
+                  : "text-lg"
+              }
+            >
               {icon}
             </span>
           )}
