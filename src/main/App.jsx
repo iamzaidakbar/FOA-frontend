@@ -42,14 +42,6 @@ function App() {
         isOpen={isOpen}
         setIsOpen={handleCloseModal}
         type={modalType}
-        title={
-          modalType === "login" ? "Login your account" : "Create your account"
-        }
-        subTitle={
-          modalType === "login"
-            ? "Enter your credentials to login"
-            : "Enter your details to create your account"
-        }
       >
         {modalType === "login" ? (
           <LoginForm setModalType={setModalType} />

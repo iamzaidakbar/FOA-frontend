@@ -1,26 +1,43 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import {
+  ChevronDownIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
+import { Empty } from "antd";
 
 const SearchableDropdown = ({
   label,
-  placeholder = 'Select an option',
+  placeholder = "Select an option",
   options = [],
   value,
   onChange,
   disabled = false,
   loading = false,
-  error = '',
+  error = "",
   searchable = true,
-  className = '',
-  displayKey = 'name',
-  valueKey = 'id',
-  searchKeys = ['name'],
+  className = "",
+  displayKey = "name",
+  valueKey = "id",
+  searchKeys = ["name"],
+  showFlags = false,
+  flagKey = "emoji",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredOptions, setFilteredOptions] = useState(options);
+  const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Memoize filtered options to prevent infinite re-renders
+  const filteredOptions = useMemo(() => {
+    if (!searchTerm) {
+      return options;
+    }
+    return options.filter((option) =>
+      searchKeys.some((key) =>
+        option[key]?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [options, searchTerm, searchKeys]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -30,47 +47,35 @@ const SearchableDropdown = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // Filter options based on search term
-  useEffect(() => {
-    if (!searchTerm) {
-      setFilteredOptions(options);
-    } else {
-      const filtered = options.filter(option => 
-        searchKeys.some(key => 
-          option[key]?.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-      setFilteredOptions(filtered);
-    }
-  }, [options, searchTerm, searchKeys]);
 
   // Reset search when dropdown closes
   useEffect(() => {
     if (!isOpen) {
-      setSearchTerm('');
+      setSearchTerm("");
     }
   }, [isOpen]);
 
   const handleSelect = (option) => {
     onChange(option);
     setIsOpen(false);
-    setSearchTerm('');
+    setSearchTerm("");
   };
 
   const handleToggle = () => {
-    if (!disabled && !loading) {
+    if (!disabled) {
+      // Removed loading condition - dropdown should open even when loading
       setIsOpen(!isOpen);
       if (!isOpen && searchable) {
-        setTimeout(() => inputRef.current?.focus(), 0);
+        // Focus immediately without any delay
+        setTimeout(() => inputRef.current?.focus(), 1);
       }
     }
   };
 
-  const selectedOption = options.find(option => option[valueKey] === value);
+  const selectedOption = options.find((option) => option[valueKey] === value);
   const displayText = selectedOption ? selectedOption[displayKey] : placeholder;
 
   return (
@@ -80,36 +85,50 @@ const SearchableDropdown = ({
           {label}
         </label>
       )}
-      
+
       <div ref={dropdownRef} className="relative">
         {/* Main button/input */}
         <button
           type="button"
           onClick={handleToggle}
-          disabled={disabled || loading}
+          disabled={disabled} // Removed loading from disabled condition
           className={`
-            relative w-full bg-white border rounded-md pl-3 pr-10 py-2 text-left cursor-default
-            focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500
-            ${disabled || loading ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'}
-            ${error ? 'border-red-300' : 'border-gray-300'}
-            ${isOpen ? 'ring-1 ring-blue-500 border-blue-500' : ''}
+            relative w-full bg-white border rounded-md pl-3 pr-10 py-3 text-left cursor-default
+            focus:outline-none 
+            ${
+              disabled
+                ? "bg-gray-100 cursor-not-allowed"
+                : "cursor-pointer hover:border-gray-400"
+            }
+            ${error ? "border-red-300" : "border-gray-300"}
+            ${isOpen ? "border-gray-500" : ""}
+            transition-all duration-100 shadow-sm
           `}
         >
-          <span className={`block truncate ${!selectedOption ? 'text-gray-500' : 'text-gray-900'}`}>
-            {loading ? 'Loading...' : displayText}
+          <span className="flex items-center">
+            {selectedOption && showFlags && selectedOption[flagKey] && (
+              <span className="mr-3 text-lg">{selectedOption[flagKey]}</span>
+            )}
+            <span
+              className={`block truncate ${
+                !selectedOption ? "text-gray-500" : "text-gray-900"
+              }`}
+            >
+              {loading ? "Loading..." : displayText}
+            </span>
           </span>
           <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
             <ChevronDownIcon
-              className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
-                isOpen ? 'transform rotate-180' : ''
+              className={`h-5 w-5 text-gray-400 transition-transform duration-75 ${
+                isOpen ? "transform rotate-180" : ""
               }`}
             />
           </span>
         </button>
 
         {/* Dropdown menu */}
-        {isOpen && !loading && (
-          <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
+        {isOpen && (
+          <div className="absolute z-50 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base border border-gray-200 overflow-hidden focus:outline-none">
             {/* Search input */}
             {searchable && (
               <div className="sticky top-0 bg-white p-2 border-b border-gray-200">
@@ -121,7 +140,7 @@ const SearchableDropdown = ({
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search..."
-                    className="w-full pl-8 pr-3 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-500"
                   />
                 </div>
               </div>
@@ -129,22 +148,46 @@ const SearchableDropdown = ({
 
             {/* Options list */}
             <div className="max-h-48 overflow-auto">
-              {filteredOptions.length === 0 ? (
-                <div className="px-3 py-2 text-sm text-gray-500">
-                  {searchTerm ? 'No results found' : 'No options available'}
+              {loading ? (
+                // Show Empty component when loading
+                <div className="flex justify-center items-center py-8">
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description="Loading options..."
+                    className="text-gray-500"
+                  />
+                </div>
+              ) : filteredOptions.length === 0 ? (
+                // Show Empty component when no options available
+                <div className="flex justify-center items-center py-8">
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description={
+                      searchTerm ? "No results found" : "No options available"
+                    }
+                    className="text-gray-500"
+                  />
                 </div>
               ) : (
-                filteredOptions.map((option) => (
+                filteredOptions.map((option, index) => (
                   <button
                     key={option[valueKey]}
                     type="button"
                     onClick={() => handleSelect(option)}
                     className={`
-                      w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none
-                      ${option[valueKey] === value ? 'bg-blue-50 text-blue-900' : 'text-gray-900'}
-                    `}
+                        w-full text-left px-3 py-3 text-sm hover:bg-blue-50 focus:bg-blue-50 focus:outline-none flex items-center
+                        ${
+                          option[valueKey] === value
+                            ? "bg-blue-50 text-blue-900 border-l-4 border-blue-500"
+                            : "text-gray-900"
+                        }
+                        transition-colors duration-100
+                      `}
                   >
-                    {option[displayKey]}
+                    {showFlags && option[flagKey] && (
+                      <span className="mr-3 text-lg">{option[flagKey]}</span>
+                    )}
+                    <span>{option[displayKey]}</span>
                   </button>
                 ))
               )}
@@ -154,9 +197,7 @@ const SearchableDropdown = ({
       </div>
 
       {/* Error message */}
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 };

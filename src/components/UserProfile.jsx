@@ -8,7 +8,6 @@ import Avatar from "./ui/Avatar";
 const UserProfile = ({ isLoggedIn = false, user }) => {
   const navigate = useNavigate();
 
-  console.log(user);
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
