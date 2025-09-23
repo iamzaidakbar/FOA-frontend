@@ -5,6 +5,10 @@ import {
   fetchStates,
   fetchCities,
 } from "../services/locationService";
+import {
+  getCoordinatesFromLocation,
+  formatLocationForBackend,
+} from "../services/geoapifyService";
 import { motion } from "framer-motion";
 
 const LocationSelector = ({
@@ -21,11 +25,13 @@ const LocationSelector = ({
   const [loadingCountries, setLoadingCountries] = useState(false);
   const [loadingStates, setLoadingStates] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);
+  const [loadingCoordinates, setLoadingCoordinates] = useState(false);
 
   const [errors, setErrors] = useState({
     country: "",
     state: "",
     city: "",
+    coordinates: "",
   });
 
   // Initialize with value prop
@@ -77,19 +83,67 @@ const LocationSelector = ({
       return;
     }
 
-    const locationData = {
-      countryId: selectedCountry,
-      stateId: selectedState,
-      cityId: selectedCity,
-      country: countries.find((c) => c.id === selectedCountry),
-      state: states.find((s) => s.id === selectedState),
-      city: cities.find((c) => c.id === selectedCity),
+    const updateLocationData = async () => {
+      const locationData = {
+        countryId: selectedCountry,
+        stateId: selectedState,
+        cityId: selectedCity,
+        country: countries.find((c) => c.id === selectedCountry),
+        state: states.find((s) => s.id === selectedState),
+        city: cities.find((c) => c.id === selectedCity),
+      };
+
+      // Get coordinates if we have a complete location
+      if (locationData.country && locationData.city) {
+        try {
+          setLoadingCoordinates(true);
+          setErrors((prev) => ({ ...prev, coordinates: "" }));
+
+          const coordinates = await getCoordinatesFromLocation(locationData);
+          const formattedData = formatLocationForBackend(
+            locationData,
+            coordinates
+          );
+
+          if (onChange) {
+            onChange({
+              ...locationData,
+              coordinates,
+              formattedForBackend: formattedData,
+            });
+          }
+        } catch (error) {
+          console.error("Failed to get coordinates:", error);
+          setErrors((prev) => ({
+            ...prev,
+            coordinates: "Failed to get location coordinates",
+          }));
+
+          // Still send location data without coordinates
+          if (onChange) {
+            onChange({
+              ...locationData,
+              coordinates: null,
+              formattedForBackend: formatLocationForBackend(locationData, null),
+            });
+          }
+        } finally {
+          setLoadingCoordinates(false);
+        }
+      } else {
+        // Send location data without coordinates for incomplete selections
+        if (onChange) {
+          onChange({
+            ...locationData,
+            coordinates: null,
+            formattedForBackend: formatLocationForBackend(locationData, null),
+          });
+        }
+      }
     };
 
-    if (onChange) {
-      onChange(locationData);
-    }
-  }, [selectedCountry, selectedState, selectedCity, countries, states, cities]); // Removed onChange from dependency array
+    updateLocationData();
+  }, [selectedCountry, selectedState, selectedCity, countries, states, cities]);
 
   const loadCountries = useCallback(async () => {
     setLoadingCountries(true);
@@ -163,6 +217,30 @@ const LocationSelector = ({
 
   return (
     <div className={`space-y-4 ${className}`}>
+      {/* Coordinates Loading Indicator */}
+      {loadingCoordinates && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-blue-50 border border-blue-200 rounded-md p-3 flex items-center space-x-2"
+        >
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+          <span className="text-sm text-blue-700">
+            Getting location coordinates...
+          </span>
+        </motion.div>
+      )}
+
+      {/* Coordinates Error */}
+      {errors.coordinates && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-yellow-50 border border-yellow-200 rounded-md p-3"
+        >
+          <p className="text-sm text-yellow-700">{errors.coordinates}</p>
+        </motion.div>
+      )}
       {/* Country Selector */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -184,6 +262,7 @@ const LocationSelector = ({
           searchKeys={["name", "iso2", "iso3"]}
           showFlags={true}
           flagKey="emoji"
+          countryCodeKey="iso2"
           className="w-full"
         />
       </motion.div>
@@ -212,6 +291,7 @@ const LocationSelector = ({
             displayKey="name"
             valueKey="id"
             searchKeys={["name", "iso2"]}
+            prefixFlag={countries.find((c) => c.id === selectedCountry)}
             className="w-full"
           />
         </motion.div>
@@ -239,6 +319,7 @@ const LocationSelector = ({
             displayKey="name"
             valueKey="id"
             searchKeys={["name"]}
+            prefixFlag={countries.find((c) => c.id === selectedCountry)}
             className="w-full"
           />
         </motion.div>

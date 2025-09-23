@@ -4,6 +4,7 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import { Empty } from "antd";
+import ReactCountryFlag from "react-country-flag";
 
 const SearchableDropdown = ({
   label,
@@ -21,6 +22,8 @@ const SearchableDropdown = ({
   searchKeys = ["name"],
   showFlags = false,
   flagKey = "emoji",
+  countryCodeKey = "iso2",
+  prefixFlag = null,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -78,6 +81,72 @@ const SearchableDropdown = ({
   const selectedOption = options.find((option) => option[valueKey] === value);
   const displayText = selectedOption ? selectedOption[displayKey] : placeholder;
 
+  // Helper function to render country flag
+  const renderFlag = (option) => {
+    if (!showFlags) return null;
+
+    // Try to use react-country-flag with ISO2 code first
+    if (option[countryCodeKey]) {
+      return (
+        <ReactCountryFlag
+          countryCode={option[countryCodeKey]}
+          svg
+          style={{
+            width: "1.25rem",
+            height: "1rem",
+          }}
+          title={option[displayKey]}
+          className="mr-3"
+        />
+      );
+    }
+
+    // Fallback to emoji flag if available
+    if (option[flagKey]) {
+      return <span className="mr-3 text-lg">{option[flagKey]}</span>;
+    }
+
+    return null;
+  };
+
+  // Helper function to render prefix flag (for states/cities)
+  const renderPrefixFlag = () => {
+    if (!prefixFlag) return null;
+
+    // If prefixFlag is an object with iso2 code
+    if (typeof prefixFlag === "object" && prefixFlag.iso2) {
+      return (
+        <ReactCountryFlag
+          countryCode={prefixFlag.iso2}
+          svg
+          style={{
+            width: "1.25rem",
+            height: "1rem",
+          }}
+          title={prefixFlag.name}
+          className="mr-3"
+        />
+      );
+    }
+
+    // If prefixFlag is a string (iso2 code)
+    if (typeof prefixFlag === "string") {
+      return (
+        <ReactCountryFlag
+          countryCode={prefixFlag}
+          svg
+          style={{
+            width: "1.25rem",
+            height: "1rem",
+          }}
+          className="mr-3"
+        />
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className={`relative ${className}`}>
       {label && (
@@ -106,9 +175,10 @@ const SearchableDropdown = ({
           `}
         >
           <span className="flex items-center">
-            {selectedOption && showFlags && selectedOption[flagKey] && (
-              <span className="mr-3 text-lg">{selectedOption[flagKey]}</span>
-            )}
+            {/* Show prefix flag for states/cities, or item flag for countries */}
+            {prefixFlag
+              ? renderPrefixFlag()
+              : selectedOption && renderFlag(selectedOption)}
             <span
               className={`block truncate ${
                 !selectedOption ? "text-gray-500" : "text-gray-900"
@@ -184,9 +254,8 @@ const SearchableDropdown = ({
                         transition-colors duration-100
                       `}
                   >
-                    {showFlags && option[flagKey] && (
-                      <span className="mr-3 text-lg">{option[flagKey]}</span>
-                    )}
+                    {/* Show prefix flag for states/cities, or item flag for countries */}
+                    {prefixFlag ? renderPrefixFlag() : renderFlag(option)}
                     <span>{option[displayKey]}</span>
                   </button>
                 ))

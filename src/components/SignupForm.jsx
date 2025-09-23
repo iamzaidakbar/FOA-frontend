@@ -1,8 +1,4 @@
 import React, { useState, useCallback } from "react";
-import Button from "./ui/Button";
-import { SiGoogle } from "react-icons/si";
-import InputField from "./ui/InputField";
-import Divider from "./ui/Divider";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/auth";
 import RoleSelector from "./RoleSelector";
@@ -10,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
 import UploadImage from "./UploadImage";
 import LocationSelector from "./LocationSelector";
+import MapComponent from "./MapComponent";
 import { motion } from "framer-motion";
 
 const SignupForm = () => {
@@ -26,42 +23,74 @@ const SignupForm = () => {
     mobile: "",
     photoUrl: "",
     role: "owner",
-    location: {
-      countryId: "",
-      stateId: "",
-      cityId: "",
-      country: null,
-      state: null,
-      city: null,
-    },
+    // Location data for backend
+    country: null,
+    state: null,
+    city: null,
+    location: null,
   });
+
+  // Store location coordinates for map display
+  const [locationCoordinates, setLocationCoordinates] = useState(null);
+  const [locationLoading, setLocationLoading] = useState(false);
 
   const submitForm = async (e) => {
     e.preventDefault();
-    const { photoUrl } = formData;
-    if (uploadedUrls.length && !photoUrl) {
-      formData.photoUrl = uploadedUrls[0];
-    }
 
     // Prepare form data for submission
     const submissionData = {
-      ...formData,
-      // Add location names to the form data for backend
-      countryName: formData.location.country?.name || "",
-      stateName: formData.location.state?.name || "",
-      cityName: formData.location.city?.name || "",
+      fullName: formData.fullName,
+      email: formData.email,
+      password: formData.password,
+      mobile: formData.mobile,
+      role: formData.role,
+      photoUrl: uploadedUrls.length > 0 ? uploadedUrls[0] : formData.photoUrl,
+      // Include formatted location data if available
+      ...(formData.country && {
+        country: formData.country,
+        state: formData.state,
+        city: formData.city,
+        location: formData.location,
+      }),
     };
 
-    const user = await handleSignup(submissionData);
-    dispatch(setUser(user));
-    navigate(location.pathname, { replace: true });
+    console.log("Submitting form data:", submissionData);
+
+    try {
+      const user = await handleSignup(submissionData);
+      dispatch(setUser(user));
+      navigate(location.pathname, { replace: true });
+    } catch (error) {
+      console.error("Signup failed:", error);
+    }
   };
 
   const handleLocationChange = useCallback((locationData) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      location: locationData,
-    }));
+    console.log("Location changed:", locationData);
+
+    // Update form data with formatted backend data
+    if (locationData.formattedForBackend) {
+      setFormData((prevData) => ({
+        ...prevData,
+        country: locationData.formattedForBackend.country,
+        state: locationData.formattedForBackend.state,
+        city: locationData.formattedForBackend.city,
+        location: locationData.formattedForBackend.location,
+      }));
+    }
+
+    // Update coordinates for map display
+    if (locationData.coordinates) {
+      setLocationCoordinates({
+        lat: locationData.coordinates.lat,
+        lng: locationData.coordinates.lng,
+      });
+    } else {
+      setLocationCoordinates(null);
+    }
+
+    // Update loading state
+    setLocationLoading(false);
   }, []);
 
   return (
@@ -236,13 +265,40 @@ const SignupForm = () => {
                 transition={{ delay: 0.9 }}
               >
                 <LocationSelector
-                  value={formData.location}
+                  value={{
+                    countryId: formData.country?.id || "",
+                    stateId: formData.state?.id || "",
+                    cityId: formData.city?.id || "",
+                  }}
                   onChange={handleLocationChange}
                   className="w-full"
                   required={true}
                 />
               </motion.div>
             </div>
+
+            {/* Map Section */}
+            {(locationCoordinates || locationLoading) && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+                  Location Preview
+                </h3>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <MapComponent
+                    coordinates={locationCoordinates}
+                    height="300px"
+                    loading={locationLoading}
+                    showCurrentLocationButton={false}
+                    className="w-full"
+                  />
+                </motion.div>
+              </div>
+            )}
 
             {/* Account Settings */}
             <div className="space-y-6">
