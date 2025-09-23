@@ -23,13 +23,13 @@ const SignupForm = () => {
     mobile: "",
     photoUrl: "",
     role: "owner",
-    // Location data for backend
     country: null,
     state: null,
     city: null,
     location: null,
   });
 
+  
   // Store location coordinates for map display
   const [locationCoordinates, setLocationCoordinates] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);

@@ -86,23 +86,25 @@ export const formatLocationForBackend = (locationData, coordinates) => {
       id: locationData.country.id,
       name: locationData.country.name,
       iso2: locationData.country.iso2,
-      iso3: locationData.country.iso3
+      iso3: locationData.country.iso3,
+      phonecode: locationData.country.phonecode || "",
+      capital: locationData.country.capital || "",
+      currency: locationData.country.currency || "",
+      emoji: locationData.country.emoji || ""
     } : null,
     state: locationData.state ? {
       id: locationData.state.id,
       name: locationData.state.name,
-      iso2: locationData.state.iso2
+      iso2: locationData.state.iso2 || ""
     } : null,
     city: locationData.city ? {
       id: locationData.city.id,
       name: locationData.city.name
     } : null,
     location: coordinates ? {
-      geo: {
-        type: "Point",
-        coordinates: [coordinates.lng, coordinates.lat] // [longitude, latitude] for GeoJSON
-      },
-      address: coordinates.formatted_address || coordinates.address
+      address: coordinates.formatted_address || coordinates.address,
+      type: "Point",
+      coordinates: [coordinates.lng, coordinates.lat] // [longitude, latitude] for GeoJSON
     } : null
   };
 };
