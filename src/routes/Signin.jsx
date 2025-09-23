@@ -1,6 +1,6 @@
-import LoginForm from "@/components/LoginForm";
-import CustomModal from "@/components/Modal";
-import React from "react";
+import React, { useState } from "react";
+import LoginForm from "../components/LoginForm";
+import CustomModal from "../components/Modal";
 
 const SignIn = () => {
   const [isOpen, setIsOpen] = useState(true);

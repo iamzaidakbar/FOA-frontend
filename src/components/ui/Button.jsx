@@ -7,7 +7,7 @@ const Button = ({
   icon,
   iconPosition = "left",
   loading = false,
-  variant,
+  variant = "dark",
   onClick,
   size = "md", // sm | md | lg
   className = "",
@@ -15,21 +15,30 @@ const Button = ({
   disabled = false,
 }) => {
   const isLight = variant === "light";
+  const isGradient = variant === "gradient";
 
   const baseClasses = `flex items-center justify-center gap-2 ${
     rounded ? "rounded-xl" : "rounded-none"
-  } font-bold transition-colors duration-200`;
+  } font-medium transition-all duration-200 border`;
 
   const lightClasses =
-    "bg-white text-black border border-gray-300 hover:bg-gray-100";
+    "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400";
   const darkClasses =
-    "bg-black text-white border border-black hover:bg-gray-800";
+    "bg-gray-900 text-white border-gray-900 hover:bg-gray-800";
+  const gradientClasses =
+    "bg-gradient-to-r from-orange-500 to-red-500 text-white border-transparent hover:from-orange-600 hover:to-red-600 shadow-lg hover:shadow-xl";
 
   // size variants
   const sizeClasses = {
-    sm: "px-3 py-1 text-sm",
+    sm: "px-3 py-1.5 text-sm",
     md: "px-4 py-2 text-base",
     lg: "px-6 py-3 text-lg",
+  };
+
+  const getVariantClasses = () => {
+    if (isGradient) return gradientClasses;
+    if (isLight) return lightClasses;
+    return darkClasses;
   };
 
   return (
@@ -38,14 +47,19 @@ const Button = ({
       whileHover={{ scale: 1.02 }}
       onClick={onClick}
       disabled={loading || disabled}
-      className={`cursor-pointer ${className} ${baseClasses} ${
-        sizeClasses[size]
-      } ${isLight ? lightClasses : darkClasses} ${
-        disabled ? "opacity-70 cursor-not-allowed pointer-events-none" : ""
-      }`}
+      className={`
+        ${baseClasses} 
+        ${sizeClasses[size]} 
+        ${getVariantClasses()}
+        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+        ${className}
+      `}
     >
       {loading ? (
-        <Spinner size="sm" variant="light" />
+        <Spinner
+          size="sm"
+          variant={isGradient || !isLight ? "light" : "dark"}
+        />
       ) : (
         <span className="flex items-center gap-2">
           {icon && iconPosition === "left" && (
@@ -55,13 +69,13 @@ const Button = ({
                   ? "text-sm"
                   : size === "lg"
                   ? "text-xl"
-                  : "text-lg"
+                  : "text-base"
               }
             >
               {icon}
             </span>
           )}
-          <span className="h-[20px]">{text}</span>
+          <span>{text}</span>
           {icon && iconPosition === "right" && (
             <span
               className={
@@ -69,7 +83,7 @@ const Button = ({
                   ? "text-sm"
                   : size === "lg"
                   ? "text-xl"
-                  : "text-lg"
+                  : "text-base"
               }
             >
               {icon}
