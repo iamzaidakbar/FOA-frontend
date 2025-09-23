@@ -5,7 +5,7 @@ import Button from "./ui/Button";
 import { useNavigate } from "react-router-dom";
 import Avatar from "./ui/Avatar";
 
-const UserProfile = ({ isLoggedIn = false, user, setIsOpen, setModalType }) => {
+const UserProfile = ({ isLoggedIn = false, user }) => {
   const navigate = useNavigate();
 
   const handleSignInClick = () => {

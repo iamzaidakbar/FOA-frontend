@@ -17,12 +17,18 @@ const LocationDisplay = ({
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (!user?.location && !currentLocation) {
-      detectCurrentLocation();
+      detectCurrentLocation(isMounted);
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [user, refreshLocation]);
 
-  const detectCurrentLocation = async () => {
+  const detectCurrentLocation = async (isMounted = true) => {
     try {
       setLoading(true);
       setError(null);
@@ -30,26 +36,32 @@ const LocationDisplay = ({
       const coords = await getCurrentLocation();
       const address = await getAddressFromCoordinates(coords);
 
-      setCurrentLocation({
-        city: address.city || "Unknown City",
-        state: address.state || "Unknown State",
-        country: address.country || "Unknown Country",
-        countryCode: address.country_code?.toUpperCase() || "US",
-        formatted: address.formatted_address || "Current Location",
-      });
+      if (isMounted) {
+        setCurrentLocation({
+          city: address.city || "Unknown City",
+          state: address.state || "Unknown State",
+          country: address.country || "Unknown Country",
+          countryCode: address.country_code?.toUpperCase() || "US",
+          formatted: address.formatted_address || "Current Location",
+        });
+      }
     } catch (err) {
       console.error("Failed to detect location:", err);
-      setError("Location unavailable");
-      // Fallback to a default location
-      setCurrentLocation({
-        city: "Srinagar",
-        state: "JK",
-        country: "India",
-        countryCode: "IN",
-        formatted: "Srinagar, JK, India",
-      });
+      if (isMounted) {
+        setError("Location unavailable");
+        // Fallback to a default location
+        setCurrentLocation({
+          city: "Srinagar",
+          state: "JK",
+          country: "India",
+          countryCode: "IN",
+          formatted: "Srinagar, JK, India",
+        });
+      }
     } finally {
-      setLoading(false);
+      if (isMounted) {
+        setLoading(false);
+      }
     }
   };
 
