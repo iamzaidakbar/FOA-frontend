@@ -37,7 +37,7 @@ const CustomModal = ({
           onClick={() => setIsOpen(false)}
         >
           <motion.div
-            className="bg-white rounded-xl shadow-lg w-[90%] max-w-xl max-h-[95vh] overflow-y-auto p-4 relative"
+            className="bg-white rounded-xl w-[90%] max-w-[60vw] max-h-[95vh] overflow-y-auto relative pt-8"
             variants={modal}
             initial="hidden"
             animate="visible"

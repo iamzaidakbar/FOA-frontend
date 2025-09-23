@@ -1,6 +1,7 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./App.scss";
 import UserNavbar from "../components/Navbar/UserNavbar";
+import Footer from "../components/Footer";
 import CustomModal from "../components/Modal";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
@@ -36,7 +37,10 @@ function App() {
   return (
     <>
       <UserNavbar setIsOpen={setIsOpen} setModalType={setModalType} />
-      <Outlet />
+      <main className="pt-16 min-h-screen">
+        <Outlet />
+      </main>
+      <Footer />
 
       <CustomModal
         isOpen={isOpen}

@@ -2,7 +2,15 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
-const Logo = ({ src, size = 60, alt = "Logo", isLogo, logoText, icon }) => {
+const Logo = ({
+  src,
+  size = 60,
+  alt = "Logo",
+  isLogo,
+  logoText,
+  icon,
+  textColor = "text-primary-500",
+}) => {
   return (
     <Link to="/">
       {isLogo ? (
@@ -29,7 +37,7 @@ const Logo = ({ src, size = 60, alt = "Logo", isLogo, logoText, icon }) => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           whileHover={{ scale: 1.1, rotate: 5 }}
           whileTap={{ scale: 0.9, rotate: -5 }}
-          className="flex items-center gap-2 text-xl font-bold text-primary-500 cursor-pointer select-none"
+          className={`flex items-center gap-2 text-xl font-bold ${textColor} cursor-pointer select-none`}
         >
           {icon}
           {logoText}

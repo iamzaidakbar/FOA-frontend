@@ -65,12 +65,12 @@ const SignupForm = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center ">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-md w-full space-y-8"
+        className="max-w-6xl w-full space-y-8"
       >
         {/* Header */}
         <div className="text-center">
@@ -104,161 +104,197 @@ const SignupForm = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
-          className="bg-white py-8 px-6 shadow-lg rounded-lg sm:px-10"
+          className="bg-white py-12 px-8 shadow-lg rounded-lg sm:px-16 lg:px-20"
         >
-          <form onSubmit={submitForm} className="space-y-6">
-            {/* Username Field */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700 mb-1"
+          <form onSubmit={submitForm} className="space-y-8">
+            {/* Personal Information Grid */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+                Personal Information
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Username Field */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="space-y-1"
+                >
+                  <label
+                    htmlFor="username"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Username
+                  </label>
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    required
+                    placeholder="Enter your username"
+                    value={formData.fullName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, fullName: e.target.value })
+                    }
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors duration-200"
+                  />
+                </motion.div>
+
+                {/* Email Field */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="space-y-1"
+                >
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors duration-200"
+                  />
+                </motion.div>
+
+                {/* Password Field */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7 }}
+                  className="space-y-1"
+                >
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors duration-200"
+                  />
+                </motion.div>
+
+                {/* Mobile Field */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="space-y-1"
+                >
+                  <label
+                    htmlFor="mobile"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Mobile Number
+                  </label>
+                  <input
+                    id="mobile"
+                    name="mobile"
+                    type="text"
+                    required
+                    placeholder="Enter your mobile number"
+                    value={formData.mobile}
+                    onChange={(e) =>
+                      setFormData({ ...formData, mobile: e.target.value })
+                    }
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors duration-200"
+                  />
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Location Information */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+                Location
+              </h3>
+
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.9 }}
               >
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                placeholder="Enter your username"
-                value={formData.fullName}
-                onChange={(e) =>
-                  setFormData({ ...formData, fullName: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </motion.div>
+                <LocationSelector
+                  value={formData.location}
+                  onChange={handleLocationChange}
+                  className="w-full"
+                  required={true}
+                />
+              </motion.div>
+            </div>
 
-            {/* Email Field */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </motion.div>
+            {/* Account Settings */}
+            <div className="space-y-6">
+              <h3 className="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+                Account Settings
+              </h3>
 
-            {/* Password Field */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7 }}
-            >
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </motion.div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Role Selector */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.0 }}
+                  className="space-y-3"
+                >
+                  <label className="block text-sm font-medium text-gray-700">
+                    Select Your Role
+                  </label>
+                  <RoleSelector
+                    setRole={(role) => setFormData({ ...formData, role })}
+                  />
+                </motion.div>
 
-            {/* Mobile Field */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8 }}
-            >
-              <label
-                htmlFor="mobile"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Mobile Number
-              </label>
-              <input
-                id="mobile"
-                name="mobile"
-                type="text"
-                required
-                placeholder="Enter your mobile number"
-                value={formData.mobile}
-                onChange={(e) =>
-                  setFormData({ ...formData, mobile: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </motion.div>
-
-            {/* Location Selector */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.9 }}
-            >
-              <LocationSelector
-                value={formData.location}
-                onChange={handleLocationChange}
-                className="w-full"
-                required={true}
-              />
-            </motion.div>
-
-            {/* Role Selector */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.0 }}
-            >
-              <RoleSelector
-                setRole={(role) => setFormData({ ...formData, role })}
-              />
-            </motion.div>
-
-            {/* Upload Image */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.1 }}
-            >
-              <UploadImage
-                uploadLimit={1}
-                className="mb-4"
-                setUploadedUrls={setUploadedUrls}
-              />
-            </motion.div>
+                {/* Upload Image */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.1 }}
+                  className="space-y-3"
+                >
+                  <label className="block text-sm font-medium text-gray-700">
+                    Profile Picture
+                  </label>
+                  <UploadImage
+                    uploadLimit={1}
+                    setUploadedUrls={setUploadedUrls}
+                  />
+                </motion.div>
+              </div>
+            </div>
 
             {/* Submit Button */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2 }}
+              className="pt-6 border-t border-gray-200"
             >
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:border-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
                 {loading ? (
                   <svg
@@ -282,7 +318,7 @@ const SignupForm = () => {
                     ></path>
                   </svg>
                 ) : null}
-                Sign Up
+                Create Account
               </button>
             </motion.div>
           </form>
