@@ -35,9 +35,9 @@ function App() {
   };
 
   return (
-    <>
+    <div className="w-[100vw] h-[100vh] overflow-hidden bg-[#f5f5f5]">
       <UserNavbar setIsOpen={setIsOpen} setModalType={setModalType} />
-      <main className="pt-16 min-h-screen">
+      <main className="">
         <Outlet />
       </main>
       <Footer />
@@ -55,7 +55,7 @@ function App() {
       </CustomModal>
 
       <ToastContainer />
-    </>
+    </div>
   );
 }
 

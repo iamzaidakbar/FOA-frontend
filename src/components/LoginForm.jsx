@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "./ui/Button";
 import { SiGoogle } from "react-icons/si";
+import { LuCopy } from "react-icons/lu";
 import InputField from "./ui/InputField";
 import Divider from "./ui/Divider";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,6 +19,28 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
+
+  // Check if we're in development mode
+  const isDevelopment =
+    import.meta.env.MODE === "development" || import.meta.env.DEV;
+
+  // Copy text to clipboard function
+  const copyToClipboard = async (text, label) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log(`${label} copied to clipboard: ${text}`);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
+  // Auto-fill credentials function
+  const fillCredentials = () => {
+    setFormData({
+      email: "user1@gmail.com",
+      password: "user_1",
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -163,6 +186,98 @@ const LoginForm = () => {
                 </button>
               </div>
             </motion.div>
+
+            {/* Development Credentials - Only show in development */}
+            {isDevelopment && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.75 }}
+                className="space-y-4"
+              >
+                <h3 className="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+                  🧪 Development Credentials
+                </h3>
+
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-semibold text-blue-800">
+                        Test Account
+                      </span>
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                        Development Only
+                      </span>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={fillCredentials}
+                      className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium"
+                    >
+                      Auto Fill
+                    </motion.button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* Email */}
+                    <motion.div
+                      whileHover={{ scale: 1.01 }}
+                      className="flex items-center justify-between p-3 bg-white/80 rounded-lg border border-blue-200 group hover:border-blue-300 transition-all duration-200"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-blue-600 font-medium">
+                          Email
+                        </p>
+                        <p className="text-sm text-gray-800 font-mono">
+                          user1@gmail.com
+                        </p>
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() =>
+                          copyToClipboard("user1@gmail.com", "Email")
+                        }
+                        className="p-1.5 text-blue-600 hover:text-blue-700 hover:bg-blue-100 rounded-md transition-all duration-200"
+                        title="Copy email"
+                      >
+                        <LuCopy size={14} />
+                      </motion.button>
+                    </motion.div>
+
+                    {/* Password */}
+                    <motion.div
+                      whileHover={{ scale: 1.01 }}
+                      className="flex items-center justify-between p-3 bg-white/80 rounded-lg border border-blue-200 group hover:border-blue-300 transition-all duration-200"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-blue-600 font-medium">
+                          Password
+                        </p>
+                        <p className="text-sm text-gray-800 font-mono">
+                          user_1
+                        </p>
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => copyToClipboard("user_1", "Password")}
+                        className="p-1.5 text-blue-600 hover:text-blue-700 hover:bg-blue-100 rounded-md transition-all duration-200"
+                        title="Copy password"
+                      >
+                        <LuCopy size={14} />
+                      </motion.button>
+                    </motion.div>
+                  </div>
+
+                  <div className="mt-3 text-xs text-blue-600 bg-blue-100/50 p-2 rounded-lg">
+                    💡 <strong>Quick Test:</strong> Click "Auto Fill" to
+                    populate the form or copy individual credentials
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             {/* Submit Button */}
             <motion.div

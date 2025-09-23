@@ -5,8 +5,14 @@
   box-sizing: border-box;
   font-family: "Epilogue", sans-serif;
 
-::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
 }
-}
+
+:root {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+} 

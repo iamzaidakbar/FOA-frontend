@@ -8,13 +8,8 @@ import Avatar from "./ui/Avatar";
 const UserProfile = ({ isLoggedIn = false, user, setIsOpen, setModalType }) => {
   const navigate = useNavigate();
 
-  const handleProfileClick = () => {
-    if (isLoggedIn && user) {
-      // Open user menu/profile dropdown
-      console.log("Open user menu");
-    } else {
-      navigate("/?signin=true");
-    }
+  const handleSignInClick = () => {
+    navigate("/?signin=true");
   };
 
   return (
@@ -25,22 +20,20 @@ const UserProfile = ({ isLoggedIn = false, user, setIsOpen, setModalType }) => {
       className="relative"
     >
       {isLoggedIn && user ? (
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleProfileClick}
-          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200"
-        >
-          <Avatar user={user} size="sm" />
-          <div className="hidden md:block text-left">
-            <div className="text-sm font-medium text-gray-800">
+        <div className="flex items-center space-x-3">
+          {/* User Name Display (hidden on small screens) */}
+          <div className="hidden md:block text-right">
+            <div className="text-sm font-medium text-gray-800 capitalize">
               {user?.fullName || "User"}
             </div>
             <div className="text-xs text-gray-500 capitalize">
               {user?.role || "Customer"}
             </div>
           </div>
-        </motion.div>
+
+          {/* Avatar with built-in dropdown */}
+          <Avatar user={user} size="sm" />
+        </div>
       ) : (
         <motion.div
           whileHover={{ scale: 1.02 }}
@@ -48,7 +41,7 @@ const UserProfile = ({ isLoggedIn = false, user, setIsOpen, setModalType }) => {
           className="flex items-center"
         >
           <Button
-            onClick={handleProfileClick}
+            onClick={handleSignInClick}
             text="Sign In"
             variant="gradient"
             size="sm"

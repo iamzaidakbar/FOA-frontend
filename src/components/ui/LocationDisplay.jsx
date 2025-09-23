@@ -5,11 +5,12 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import ReactCountryFlag from "react-country-flag";
 import { getCurrentLocation, getAddressFromCoordinates } from "../../services/geoapifyService";
 
-const LocationDisplay = ({ 
-  user = null, 
+const LocationDisplay = ({
+  user = null,
   className = "",
   onClick = null,
-  showDropdownIcon = true 
+  showDropdownIcon = true,
+  refreshLocation = false,
 }) => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,22 +20,22 @@ const LocationDisplay = ({
     if (!user?.location && !currentLocation) {
       detectCurrentLocation();
     }
-  }, [user]);
+  }, [user, refreshLocation]);
 
   const detectCurrentLocation = async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const coords = await getCurrentLocation();
       const address = await getAddressFromCoordinates(coords);
-      
+
       setCurrentLocation({
         city: address.city || "Unknown City",
-        state: address.state || "Unknown State", 
+        state: address.state || "Unknown State",
         country: address.country || "Unknown Country",
         countryCode: address.country_code?.toUpperCase() || "US",
-        formatted: address.formatted_address || "Current Location"
+        formatted: address.formatted_address || "Current Location",
       });
     } catch (err) {
       console.error("Failed to detect location:", err);
@@ -45,7 +46,7 @@ const LocationDisplay = ({
         state: "JK",
         country: "India",
         countryCode: "IN",
-        formatted: "Srinagar, JK, India"
+        formatted: "Srinagar, JK, India",
       });
     } finally {
       setLoading(false);
@@ -53,17 +54,21 @@ const LocationDisplay = ({
   };
 
   // Use user's location if available, otherwise use detected location
-  const displayLocation = user?.location ? {
-    city: user.city?.name || "Unknown City",
-    state: user.state?.name || "Unknown State",
-    country: user.country?.name || "Unknown Country", 
-    countryCode: user.country?.iso2 || "US",
-    formatted: `${user.city?.name || "Unknown"}, ${user.state?.name || "Unknown"}`
-  } : currentLocation;
+  const displayLocation = user?.location
+    ? {
+        city: user.city?.name || "Unknown City",
+        state: user.state?.name || "Unknown State",
+        country: user.country?.name || "Unknown Country",
+        countryCode: user.country?.iso2 || "US",
+        formatted: `${user.city?.name || "Unknown"}, ${
+          user.state?.name || "Unknown"
+        }`,
+      }
+    : currentLocation;
 
   if (loading) {
     return (
-      <motion.div 
+      <motion.div
         className={`flex items-center gap-2 px-3 py-2 ${className}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -78,7 +83,7 @@ const LocationDisplay = ({
 
   if (error && !displayLocation) {
     return (
-      <motion.div 
+      <motion.div
         className={`flex items-center gap-2 px-3 py-2 text-gray-500 ${className}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -108,14 +113,14 @@ const LocationDisplay = ({
         <MdLocationOn className="w-5 h-5 text-red-500" />
         <motion.div
           className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full"
-          animate={{ 
+          animate={{
             scale: [1, 1.2, 1],
-            opacity: [0.7, 1, 0.7]
+            opacity: [0.7, 1, 0.7],
           }}
-          transition={{ 
+          transition={{
             duration: 2,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         />
       </motion.div>
@@ -131,9 +136,9 @@ const LocationDisplay = ({
             countryCode={displayLocation.countryCode}
             svg
             style={{
-              width: '20px',
-              height: '15px',
-              borderRadius: '2px'
+              width: "20px",
+              height: "15px",
+              borderRadius: "2px",
             }}
             title={displayLocation.country}
           />
@@ -142,7 +147,7 @@ const LocationDisplay = ({
 
       {/* Location Text */}
       <div className="flex-1 min-w-0">
-        <motion.div 
+        <motion.div
           className="text-sm font-medium text-gray-800 truncate"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -150,7 +155,7 @@ const LocationDisplay = ({
         >
           {displayLocation?.city || "Unknown"}
         </motion.div>
-        <motion.div 
+        <motion.div
           className="text-xs text-gray-500 truncate"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

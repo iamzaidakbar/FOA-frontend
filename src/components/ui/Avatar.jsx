@@ -29,7 +29,7 @@ const AvatarMenu = ({ size = "md", user, onLogout, onProfile }) => {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 bg-black/30"
+            className="fixed w-[100vw] h-[100vh] inset-0 bg-black/30"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -46,21 +46,8 @@ const AvatarMenu = ({ size = "md", user, onLogout, onProfile }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-auto shadow-lg bg-white rounded-lg z-50 overflow-hidden"
+            className="absolute right-0 mt-2 w-auto shadow-lg bg-white rounded-2xl z-[9999] overflow-hidden"
           >
-            <div className="px-2 py-2 flex justify-start border-b border-gray-200">
-              <AvatarButton
-                setOpen={setOpen}
-                open={open}
-                user={user}
-                sizeMap={sizeMap}
-                size={size}
-              />
-              <div className="flex flex-col justify-center ml-2">
-                <span className="text-sm font-medium">{user?.fullName}</span>
-                <span className="text-xs text-gray-500">{user?.email}</span>
-              </div>
-            </div>
             <UserDropdown />
           </motion.div>
         )}
