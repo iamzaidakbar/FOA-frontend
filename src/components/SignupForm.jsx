@@ -38,8 +38,8 @@ const SignupForm = () => {
   };
 
   return (
-    <form onSubmit={submitForm}>
-      <Button
+    <form onSubmit={submitForm} className="py-5 mt-7">
+      {/* <Button
         className="flex items-center gap-2 my-5 w-full font-thin"
         text="Google"
         variant="light"
@@ -48,7 +48,7 @@ const SignupForm = () => {
         icon={<SiGoogle size={14} />}
       />
 
-      <Divider text="OR SIGN UP WITH" />
+      <Divider text="OR SIGN UP WITH" /> */}
 
       <div className="flex items-start gap-3">
         <InputField

@@ -26,17 +26,17 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Button
+    <form onSubmit={handleSubmit} className="py-5 mt-7">
+      {/* <Button
         className="flex items-center gap-2 my-5 w-full font-thin"
         text="Google"
         variant="light"
         iconPosition="left"
         rounded={false}
         icon={<SiGoogle size={14} />}
-      />
+      /> */}
 
-      <Divider text="OR CONTINUE WITH" />
+      {/* <Divider text="OR CONTINUE WITH" /> */}
 
       <InputField
         label="Email"
