@@ -9,6 +9,7 @@ import RoleSelector from "./RoleSelector";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
 import UploadImage from "./UploadImage";
+import LocationSelector from "./LocationSelector";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -24,6 +25,14 @@ const SignupForm = () => {
     mobile: "",
     photoUrl: "",
     role: "owner",
+    location: {
+      countryId: '',
+      stateId: '',
+      cityId: '',
+      country: null,
+      state: null,
+      city: null
+    }
   });
 
   const submitForm = async (e) => {
@@ -32,9 +41,26 @@ const SignupForm = () => {
     if (uploadedUrls.length && !photoUrl) {
       formData.photoUrl = uploadedUrls[0];
     }
-    const user = await handleSignup(formData);
+    
+    // Prepare form data for submission
+    const submissionData = {
+      ...formData,
+      // Add location names to the form data for backend
+      countryName: formData.location.country?.name || '',
+      stateName: formData.location.state?.name || '',
+      cityName: formData.location.city?.name || '',
+    };
+    
+    const user = await handleSignup(submissionData);
     dispatch(setUser(user));
     navigate(location.pathname, { replace: true });
+  };
+
+  const handleLocationChange = (locationData) => {
+    setFormData(prevData => ({
+      ...prevData,
+      location: locationData
+    }));
   };
 
   return (
@@ -99,6 +125,13 @@ const SignupForm = () => {
         required
         onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
         className="w-full"
+      />
+
+      <LocationSelector
+        value={formData.location}
+        onChange={handleLocationChange}
+        className="w-full"
+        required={true}
       />
 
       <UploadImage
