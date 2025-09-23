@@ -17,14 +17,7 @@ const modal = {
   exit: { y: "-50%", opacity: 0, scale: 0.9 },
 };
 
-const CustomModal = ({
-  isOpen,
-  setIsOpen,
-  title,
-  subTitle,
-  children,
-  footer,
-}) => {
+const CustomModal = ({ isOpen, setIsOpen, children, footer, type }) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -37,7 +30,9 @@ const CustomModal = ({
           onClick={() => setIsOpen(false)}
         >
           <motion.div
-            className="bg-white rounded-xl w-[90%] max-w-[60vw] max-h-[95vh] overflow-y-auto relative pt-8"
+            className={`bg-white rounded-xl w-[90%] ${
+              type === "login" ? "max-w-[40vw]" : "max-w-[60vw]"
+            } max-h-[95vh] overflow-y-auto relative pt-8`}
             variants={modal}
             initial="hidden"
             animate="visible"
@@ -48,12 +43,6 @@ const CustomModal = ({
             }}
             onClick={(e) => e.stopPropagation()} // prevent close on modal click
           >
-            {/* Header */}
-            {title && <h2 className="font-semibold text-xl mb-2">{title}</h2>}
-            {subTitle && (
-              <p className="text-gray-500 text-sm mb-2">{subTitle}</p>
-            )}
-
             {/* Content */}
             <div>{children}</div>
 

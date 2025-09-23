@@ -92,7 +92,7 @@ const SignupForm = () => {
             <button
               type="button"
               onClick={() => navigate("/?signin=true")}
-              className="text-blue-600 hover:text-blue-500 font-medium"
+              className="text-blue-600 hover:text-blue-500 font-medium cursor-pointer"
             >
               Log in
             </button>
@@ -104,7 +104,7 @@ const SignupForm = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
-          className="bg-white py-12 px-8 shadow-lg rounded-lg sm:px-16 lg:px-20"
+          className="bg-white py-12 px-8 rounded-lg sm:px-16 lg:px-20"
         >
           <form onSubmit={submitForm} className="space-y-8">
             {/* Personal Information Grid */}
